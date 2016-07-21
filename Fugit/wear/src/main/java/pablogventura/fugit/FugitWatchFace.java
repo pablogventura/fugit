@@ -268,7 +268,7 @@ public class FugitWatchFace extends CanvasWatchFaceService {
             mTime.setToNow();
 
             Date fecha = new Date();
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy",Locale.getDefault());
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEEE, d 'de' MMMM",Locale.getDefault());
             String fDate = simpleDateFormat.format(fecha);
 
             String hours = String.format(Locale.getDefault(), "%d", mTime.hour);
