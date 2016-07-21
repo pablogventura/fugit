@@ -273,8 +273,8 @@ public class FugitWatchFace extends CanvasWatchFaceService {
             RectF oval = new RectF(0,0,320,320);
             mArcoSuperior.addArc(oval, -180, 180);
             mArcoInferior.addArc(oval, 180, -180);
-            canvas.drawTextOnPath(fDate, mArcoSuperior, 0, 30, mDatePaint);
-            canvas.drawTextOnPath("abajo", mArcoInferior, 0, 30, mDatePaint);
+            canvas.drawTextOnPath(fDate, mArcoSuperior, 50, 30, mDatePaint);
+            canvas.drawTextOnPath("abajo", mArcoInferior, 0, -13, mDatePaint);
             canvas.drawText(hours, hXOffset, hYOffset, mHourPaint);
             canvas.drawText(minutes, mXOffset, mYOffset, mHourPaint);
         }
