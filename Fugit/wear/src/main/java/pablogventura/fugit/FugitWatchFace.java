@@ -137,10 +137,10 @@ public class FugitWatchFace extends CanvasWatchFaceService {
             mBackgroundPaint.setColor(resources.getColor(R.color.background));
 
             mHourPaint = new Paint();
-            mHourPaint = createHourPaint(resources.getColor(R.color.digital_text), resources.getDimension(R.dimen.digital_text_size_round));
+            mHourPaint = createTextPaint(resources.getColor(R.color.digital_text), resources.getDimension(R.dimen.digital_text_size_round));
 
             mDatePaint = new Paint();
-            mDatePaint = createHourPaint(resources.getColor(R.color.digital_text), resources.getDimension(R.dimen.size_date));
+            mDatePaint = createTextPaint(resources.getColor(R.color.digital_text), resources.getDimension(R.dimen.size_date));
 
             mTime = new Time();
         }
@@ -150,15 +150,7 @@ public class FugitWatchFace extends CanvasWatchFaceService {
             mUpdateTimeHandler.removeMessages(MSG_UPDATE_TIME);
             super.onDestroy();
         }
-        private Paint createDatePaint(int textColor, float textSize){
-            Paint paint = new Paint();
-            paint.setColor(textColor);
-            paint.setTypeface(Typeface.SERIF);
-            paint.setTextSize(textSize);
-            paint.setAntiAlias(true);
-            return paint;
-        }
-        private Paint createHourPaint(int textColor, float textSize) {
+        private Paint createTextPaint(int textColor, float textSize) {
             Paint paint = new Paint();
             paint.setColor(textColor);
             paint.setTypeface(Typeface.SERIF);
