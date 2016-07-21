@@ -265,12 +265,16 @@ public class FugitWatchFace extends CanvasWatchFaceService {
 
             String hours = String.format(Locale.getDefault(), "%d", mTime.hour);
             String minutes = String.format(Locale.getDefault(), "%02d", mTime.minute);
-            Path mArc;
-            mArc = new Path();
+            Path mArcoSuperior;
+            mArcoSuperior = new Path();
+            Path mArcoInferior;
+            mArcoInferior = new Path();
             //moto 360 320x290px 241x218dp
             RectF oval = new RectF(0,0,320,320);
-            mArc.addArc(oval, -90-45, 200);
-            canvas.drawTextOnPath(fDate, mArc, 0, 30, mDatePaint);
+            mArcoSuperior.addArc(oval, -180, 180);
+            mArcoInferior.addArc(oval, 180, -180);
+            canvas.drawTextOnPath(fDate, mArcoSuperior, 0, 30, mDatePaint);
+            canvas.drawTextOnPath("abajo", mArcoInferior, 0, 30, mDatePaint);
             canvas.drawText(hours, hXOffset, hYOffset, mHourPaint);
             canvas.drawText(minutes, mXOffset, mYOffset, mHourPaint);
         }
