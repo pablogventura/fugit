@@ -40,6 +40,7 @@ import android.view.WindowInsets;
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
@@ -266,17 +267,18 @@ public class FugitWatchFace extends CanvasWatchFaceService {
 
             mTime.setToNow();
 
-            //SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
-            //String fDate = simpleDateFormat.format(mTime);
+            Date fecha = new Date();
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy",Locale.getDefault());
+            String fDate = simpleDateFormat.format(fecha);
 
-            String hours = String.format("%d", mTime.hour);
-            String minutes = String.format("%02d", mTime.minute);
+            String hours = String.format(Locale.getDefault(), "%d", mTime.hour);
+            String minutes = String.format(Locale.getDefault(), "%02d", mTime.minute);
             Path mArc;
             mArc = new Path();
             //moto 360 320x290px 241x218dp
             RectF oval = new RectF(0,0,320,320);
             mArc.addArc(oval, -90-45, 200);
-            canvas.drawTextOnPath("Miercoles", mArc, 0, 30, mDatePaint);
+            canvas.drawTextOnPath(fDate, mArc, 0, 30, mDatePaint);
             canvas.drawText(hours, hXOffset, hYOffset, mHourPaint);
             canvas.drawText(minutes, mXOffset, mYOffset, mHourPaint);
         }
