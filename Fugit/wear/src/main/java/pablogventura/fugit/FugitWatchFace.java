@@ -141,7 +141,7 @@ public class FugitWatchFace extends CanvasWatchFaceService {
 
             mDatePaint = new Paint();
             mDatePaint = createTextPaint(resources.getColor(R.color.digital_text), resources.getDimension(R.dimen.size_date));
-
+            mDatePaint.setTypeface(Typeface.SANS_SERIF);
             mTime = new Time();
         }
 
@@ -260,8 +260,10 @@ public class FugitWatchFace extends CanvasWatchFaceService {
             mTime.setToNow();
 
             Date fecha = new Date();
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEEE, d 'de' MMMM",Locale.getDefault());
-            String fDate = simpleDateFormat.format(fecha);
+            SimpleDateFormat fDiaMes = new SimpleDateFormat("d 'de' MMMM",Locale.getDefault());
+            String sDiaMes = fDiaMes.format(fecha);
+            SimpleDateFormat fDiaSemana = new SimpleDateFormat("EEEE",Locale.getDefault());
+            String sDiaSemana = fDiaSemana.format(fecha);
 
             String hours = String.format(Locale.getDefault(), "%d", mTime.hour);
             String minutes = String.format(Locale.getDefault(), "%02d", mTime.minute);
@@ -273,8 +275,9 @@ public class FugitWatchFace extends CanvasWatchFaceService {
             RectF oval = new RectF(0,0,320,320);
             mArcoSuperior.addArc(oval, -180, 180);
             mArcoInferior.addArc(oval, 180, -180);
-            canvas.drawTextOnPath(fDate, mArcoSuperior, 50, 30, mDatePaint);
-            canvas.drawTextOnPath("abajo", mArcoInferior, 0, -13, mDatePaint);
+            int largoArco = 456; //2*pi * (320-30)/2 / 2;
+            canvas.drawTextOnPath(sDiaMes, mArcoSuperior, largoArco-mDatePaint.measureText(sDiaMes) - 40, 30, mDatePaint);
+            canvas.drawTextOnPath(sDiaSemana, mArcoInferior, largoArco-mDatePaint.measureText(sDiaSemana) - 38, -13, mDatePaint);
             canvas.drawText(hours, hXOffset, hYOffset, mHourPaint);
             canvas.drawText(minutes, mXOffset, mYOffset, mHourPaint);
         }
