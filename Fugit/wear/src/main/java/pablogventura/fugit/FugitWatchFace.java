@@ -24,7 +24,9 @@ import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
@@ -36,6 +38,8 @@ import android.view.SurfaceHolder;
 import android.view.WindowInsets;
 
 import java.lang.ref.WeakReference;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
@@ -87,7 +91,8 @@ public class FugitWatchFace extends CanvasWatchFaceService {
         final Handler mUpdateTimeHandler = new EngineHandler(this);
         boolean mRegisteredTimeZoneReceiver = false;
         Paint mBackgroundPaint;
-        Paint mTextPaint;
+        Paint mHourPaint;
+        Paint mDatePaint;
         boolean mAmbient;
         Time mTime;
         final BroadcastReceiver mTimeZoneReceiver = new BroadcastReceiver() {
@@ -130,8 +135,11 @@ public class FugitWatchFace extends CanvasWatchFaceService {
             mBackgroundPaint = new Paint();
             mBackgroundPaint.setColor(resources.getColor(R.color.background));
 
-            mTextPaint = new Paint();
-            mTextPaint = createTextPaint(resources.getColor(R.color.digital_text));
+            mHourPaint = new Paint();
+            mHourPaint = createHourPaint(resources.getColor(R.color.digital_text), resources.getDimension(R.dimen.digital_text_size_round));
+
+            mDatePaint = new Paint();
+            mDatePaint = createHourPaint(resources.getColor(R.color.digital_text), resources.getDimension(R.dimen.size_date));
 
             mTime = new Time();
         }
@@ -141,11 +149,19 @@ public class FugitWatchFace extends CanvasWatchFaceService {
             mUpdateTimeHandler.removeMessages(MSG_UPDATE_TIME);
             super.onDestroy();
         }
-
-        private Paint createTextPaint(int textColor) {
+        private Paint createDatePaint(int textColor, float textSize){
             Paint paint = new Paint();
             paint.setColor(textColor);
-            paint.setTypeface(NORMAL_TYPEFACE);
+            paint.setTypeface(Typeface.SERIF);
+            paint.setTextSize(textSize);
+            paint.setAntiAlias(true);
+            return paint;
+        }
+        private Paint createHourPaint(int textColor, float textSize) {
+            Paint paint = new Paint();
+            paint.setColor(textColor);
+            paint.setTypeface(Typeface.SERIF);
+            paint.setTextSize(textSize);
             paint.setAntiAlias(true);
             return paint;
         }
@@ -189,12 +205,6 @@ public class FugitWatchFace extends CanvasWatchFaceService {
         @Override
         public void onApplyWindowInsets(WindowInsets insets) {
             super.onApplyWindowInsets(insets);
-
-            // Load resources that have alternate values for round watches.
-            Resources resources = FugitWatchFace.this.getResources();
-            float textSize = resources.getDimension(R.dimen.digital_text_size_round);
-
-            mTextPaint.setTextSize(textSize);
         }
 
         @Override
@@ -215,7 +225,7 @@ public class FugitWatchFace extends CanvasWatchFaceService {
             if (mAmbient != inAmbientMode) {
                 mAmbient = inAmbientMode;
                 if (mLowBitAmbient) {
-                    mTextPaint.setAntiAlias(!inAmbientMode);
+                    mHourPaint.setAntiAlias(!inAmbientMode);
                 }
                 invalidate();
             }
@@ -252,18 +262,23 @@ public class FugitWatchFace extends CanvasWatchFaceService {
         @Override
         public void onDraw(Canvas canvas, Rect bounds) {
             // Draw the background.
-            if (isInAmbientMode()) {
-                canvas.drawColor(Color.BLACK);
-            } else {
-                canvas.drawRect(0, 0, bounds.width(), bounds.height(), mBackgroundPaint);
-            }
+            canvas.drawRect(0, 0, bounds.width(), bounds.height(), mBackgroundPaint);
 
-            // Draw H:MM in ambient mode or H:MM:SS in interactive mode.
             mTime.setToNow();
+
+            //SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+            //String fDate = simpleDateFormat.format(mTime);
+
             String hours = String.format("%d", mTime.hour);
             String minutes = String.format("%02d", mTime.minute);
-            canvas.drawText(hours, hXOffset, hYOffset, mTextPaint);
-            canvas.drawText(minutes, mXOffset, mYOffset, mTextPaint);
+            Path mArc;
+            mArc = new Path();
+            //moto 360 320x290px 241x218dp
+            RectF oval = new RectF(0,0,320,320);
+            mArc.addArc(oval, -90-45, 200);
+            canvas.drawTextOnPath("Miercoles", mArc, 0, 30, mDatePaint);
+            canvas.drawText(hours, hXOffset, hYOffset, mHourPaint);
+            canvas.drawText(minutes, mXOffset, mYOffset, mHourPaint);
         }
 
         /**

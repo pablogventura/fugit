@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="digital_text_size">40dp</dimen>
+    <dimen name="size_date">20dp</dimen>
     <dimen name="digital_text_size_round">45dp</dimen>
-    <dimen name="hours_x_offset_round">180dp</dimen>
+    <dimen name="hours_x_offset_round">183dp</dimen>
     <dimen name="hours_y_offset">109dp</dimen>
-    <dimen name="minutes_x_offset_round">180dp</dimen>
+    <dimen name="minutes_x_offset_round">183dp</dimen>
     <dimen name="minutes_y_offset">159dp</dimen>
 </resources>
