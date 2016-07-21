@@ -99,6 +99,8 @@ public class FugitWatchFace extends CanvasWatchFaceService {
         };
         int mTapCount;
 
+        float hXOffset;
+        float hYOffset;
         float mXOffset;
         float mYOffset;
 
@@ -119,7 +121,11 @@ public class FugitWatchFace extends CanvasWatchFaceService {
                     .setAcceptsTapEvents(true)
                     .build());
             Resources resources = FugitWatchFace.this.getResources();
-            mYOffset = resources.getDimension(R.dimen.digital_y_offset);
+            mYOffset = resources.getDimension(R.dimen.minutes_y_offset);
+            mXOffset = resources.getDimension(R.dimen.minutes_x_offset_round);
+            hYOffset = resources.getDimension(R.dimen.hours_y_offset);
+            hXOffset = resources.getDimension(R.dimen.hours_x_offset_round);
+
 
             mBackgroundPaint = new Paint();
             mBackgroundPaint.setColor(resources.getColor(R.color.background));
@@ -186,11 +192,7 @@ public class FugitWatchFace extends CanvasWatchFaceService {
 
             // Load resources that have alternate values for round watches.
             Resources resources = FugitWatchFace.this.getResources();
-            boolean isRound = insets.isRound();
-            mXOffset = resources.getDimension(isRound
-                    ? R.dimen.digital_x_offset_round : R.dimen.digital_x_offset);
-            float textSize = resources.getDimension(isRound
-                    ? R.dimen.digital_text_size_round : R.dimen.digital_text_size);
+            float textSize = resources.getDimension(R.dimen.digital_text_size_round);
 
             mTextPaint.setTextSize(textSize);
         }
@@ -258,10 +260,10 @@ public class FugitWatchFace extends CanvasWatchFaceService {
 
             // Draw H:MM in ambient mode or H:MM:SS in interactive mode.
             mTime.setToNow();
-            String text = mAmbient
-                    ? String.format("%d:%02d", mTime.hour, mTime.minute)
-                    : String.format("%d:%02d:%02d", mTime.hour, mTime.minute, mTime.second);
-            canvas.drawText(text, mXOffset, mYOffset, mTextPaint);
+            String hours = String.format("%d", mTime.hour);
+            String minutes = String.format("%02d", mTime.minute);
+            canvas.drawText(hours, hXOffset, hYOffset, mTextPaint);
+            canvas.drawText(minutes, mXOffset, mYOffset, mTextPaint);
         }
 
         /**
