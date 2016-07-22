@@ -28,6 +28,10 @@ import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Typeface;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -37,9 +41,11 @@ import android.text.format.Time;
 import android.view.SurfaceHolder;
 import android.view.WindowInsets;
 
+import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
@@ -138,6 +144,7 @@ public class FugitWatchFace extends CanvasWatchFaceService {
 
             mHourPaint = new Paint();
             mHourPaint = createTextPaint(resources.getColor(R.color.digital_text), resources.getDimension(R.dimen.digital_text_size_round));
+            mHourPaint.setStyle(Paint.Style.FILL_AND_STROKE);
 
             mDatePaint = new Paint();
             mDatePaint = createTextPaint(resources.getColor(R.color.digital_text), resources.getDimension(R.dimen.size_date));
@@ -265,6 +272,7 @@ public class FugitWatchFace extends CanvasWatchFaceService {
             SimpleDateFormat fDiaSemana = new SimpleDateFormat("EEEE",Locale.getDefault());
             String sDiaSemana = fDiaSemana.format(fecha);
 
+
             String hours = String.format(Locale.getDefault(), "%d", mTime.hour);
             String minutes = String.format(Locale.getDefault(), "%02d", mTime.minute);
             Path mArcoSuperior;
@@ -277,7 +285,10 @@ public class FugitWatchFace extends CanvasWatchFaceService {
             mArcoInferior.addArc(oval, 180, -180);
             int largoArco = 456; //2*pi * (320-30)/2 / 2;
             canvas.drawTextOnPath(sDiaMes, mArcoSuperior, largoArco-mDatePaint.measureText(sDiaMes) - 40, 30, mDatePaint);
-            canvas.drawTextOnPath(sDiaSemana, mArcoInferior, largoArco-mDatePaint.measureText(sDiaSemana) - 38, -13, mDatePaint);
+            canvas.drawTextOnPath(sDiaSemana, mArcoInferior, largoArco-mDatePaint.measureText(sDiaSemana) - 39, -13, mDatePaint);
+            if (mTime.second % 2 == 0){
+                canvas.drawText("· ·", hXOffset+13, hYOffset+33, mHourPaint);
+            }
             canvas.drawText(hours, hXOffset, hYOffset, mHourPaint);
             canvas.drawText(minutes, mXOffset, mYOffset, mHourPaint);
         }
