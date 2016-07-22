@@ -57,9 +57,6 @@ import java.util.concurrent.TimeUnit;
  * low-bit ambient mode, the text is drawn without anti-aliasing in ambient mode.
  */
 public class FugitWatchFace extends CanvasWatchFaceService {
-    private static final Typeface NORMAL_TYPEFACE =
-            Typeface.create(Typeface.SANS_SERIF, Typeface.NORMAL);
-
     /**
      * Update rate in milliseconds for interactive mode. We update once a second since seconds are
      * displayed in interactive mode.
@@ -103,7 +100,7 @@ public class FugitWatchFace extends CanvasWatchFaceService {
         Paint mBackgroundPaint;
         Paint mHourPaint;
         Paint mDatePaint;
-        boolean mAmbient;
+        Paint mMeteoPaint;
         Time mTime;
         final BroadcastReceiver mTimeZoneReceiver = new BroadcastReceiver() {
             @Override
@@ -155,8 +152,12 @@ public class FugitWatchFace extends CanvasWatchFaceService {
             fDiaSemana = new SimpleDateFormat("EEEE",Locale.getDefault());
             mDatePaint = new Paint();
             mDatePaint = createTextPaint(Color.WHITE, resources.getDimension(R.dimen.size_date));
-            mDatePaint.setTypeface(Typeface.SANS_SERIF);
+            Typeface comicTF =Typeface.createFromAsset(getAssets(),"fonts/ComicNeue-Angular-Bold.ttf");
+            mDatePaint.setTypeface(comicTF);
 
+            mMeteoPaint = createTextPaint(resources.getColor(R.color.digital_text), resources.getDimension(R.dimen.digital_text_size_round));
+            Typeface meteoTF =Typeface.createFromAsset(getAssets(),"fonts/weathericons-regular-webfont.ttf");
+            mMeteoPaint.setTypeface(meteoTF);
             mTime = new Time();
         }
 
@@ -295,6 +296,8 @@ public class FugitWatchFace extends CanvasWatchFaceService {
             }
             canvas.drawText(hours, hXOffset, hYOffset, mHourPaint);
             canvas.drawText(minutes, mXOffset, mYOffset, mHourPaint);
+
+            canvas.drawText("\uF052", mXOffset-100, mYOffset, mMeteoPaint);
 
         }
 
