@@ -16,6 +16,7 @@
 
 package pablogventura.fugit;
 
+import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -40,6 +41,7 @@ import android.support.wearable.watchface.WatchFaceStyle;
 import android.text.format.Time;
 import android.view.SurfaceHolder;
 import android.view.WindowInsets;
+import android.widget.TextView;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
@@ -223,14 +225,6 @@ public class FugitWatchFace extends CanvasWatchFaceService {
         @Override
         public void onAmbientModeChanged(boolean inAmbientMode) {
             super.onAmbientModeChanged(inAmbientMode);
-            if (mAmbient != inAmbientMode) {
-                mAmbient = inAmbientMode;
-                if (mLowBitAmbient) {
-                    mHourPaint.setAntiAlias(!inAmbientMode);
-                }
-                invalidate();
-            }
-
             // Whether the timer should be running depends on whether we're visible (as well as
             // whether we're in ambient mode), so we may need to start or stop the timer.
             updateTimer();
@@ -272,7 +266,6 @@ public class FugitWatchFace extends CanvasWatchFaceService {
             String sDiaMes = fDiaMes.format(fecha);
             SimpleDateFormat fDiaSemana = new SimpleDateFormat("EEEE",Locale.getDefault());
             String sDiaSemana = fDiaSemana.format(fecha);
-
 
             String hours = String.format(Locale.getDefault(), "%d", mTime.hour);
             String minutes = String.format(Locale.getDefault(), "%02d", mTime.minute);
