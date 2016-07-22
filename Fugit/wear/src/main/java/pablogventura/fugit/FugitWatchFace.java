@@ -63,6 +63,7 @@ public class FugitWatchFace extends CanvasWatchFaceService {
     /**
      * Update rate in milliseconds for interactive mode. We update once a second since seconds are
      * displayed in interactive mode.
+     * se actualiza cada un segundo
      */
     private static final long INTERACTIVE_UPDATE_RATE_MS = TimeUnit.SECONDS.toMillis(1);
 
@@ -118,6 +119,9 @@ public class FugitWatchFace extends CanvasWatchFaceService {
         float mXOffset;
         float mYOffset;
 
+        SimpleDateFormat fDiaMes;
+        SimpleDateFormat fDiaSemana;
+
         /**
          * Whether the display supports fewer bits for each color in ambient mode. When true, we
          * disable anti-aliasing in ambient mode.
@@ -147,7 +151,8 @@ public class FugitWatchFace extends CanvasWatchFaceService {
             mHourPaint = new Paint();
             mHourPaint = createTextPaint(resources.getColor(R.color.digital_text), resources.getDimension(R.dimen.digital_text_size_round));
             mHourPaint.setStyle(Paint.Style.FILL);
-
+            fDiaMes = new SimpleDateFormat("d 'de' MMMM",Locale.getDefault());
+            fDiaSemana = new SimpleDateFormat("EEEE",Locale.getDefault());
             mDatePaint = new Paint();
             mDatePaint = createTextPaint(Color.WHITE, resources.getDimension(R.dimen.size_date));
             mDatePaint.setTypeface(Typeface.SANS_SERIF);
@@ -256,19 +261,20 @@ public class FugitWatchFace extends CanvasWatchFaceService {
 
         @Override
         public void onDraw(Canvas canvas, Rect bounds) {
+            //actualizo la hora
+            mTime.setToNow();
+
             // Draw the background.
             canvas.drawRect(0, 0, bounds.width(), bounds.height(), mBackgroundPaint);
 
-            mTime.setToNow();
-
+            //genero las cadenas para la fecha
             Date fecha = new Date();
-            SimpleDateFormat fDiaMes = new SimpleDateFormat("d 'de' MMMM",Locale.getDefault());
             String sDiaMes = fDiaMes.format(fecha);
-            SimpleDateFormat fDiaSemana = new SimpleDateFormat("EEEE",Locale.getDefault());
             String sDiaSemana = fDiaSemana.format(fecha);
-
             String hours = String.format(Locale.getDefault(), "%d", mTime.hour);
             String minutes = String.format(Locale.getDefault(), "%02d", mTime.minute);
+
+            // genero los arcos para escribir alrededor
             Path mArcoSuperior;
             mArcoSuperior = new Path();
             Path mArcoInferior;
@@ -278,8 +284,12 @@ public class FugitWatchFace extends CanvasWatchFaceService {
             mArcoSuperior.addArc(oval, -180, 180);
             mArcoInferior.addArc(oval, 180, -180);
             int largoArco = 456; //2*pi * (320-30)/2 / 2;
+
+            // escribo alrededor la fecha
             canvas.drawTextOnPath(sDiaMes, mArcoSuperior, largoArco-mDatePaint.measureText(sDiaMes) - 40, 30, mDatePaint);
             canvas.drawTextOnPath(sDiaSemana, mArcoInferior, largoArco-mDatePaint.measureText(sDiaSemana) - 39, -13, mDatePaint);
+
+            // escribo la hora y el titileo del ..
             if (mTime.second % 2 == 0){
                 canvas.drawText("· ·", hXOffset+10, hYOffset+33, mHourPaint);
             }
