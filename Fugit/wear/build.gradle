@@ -2,9 +2,16 @@ apply plugin: 'com.android.application'
 
 
 android {
+    signingConfigs {
+        config {
+            keyAlias 'pablogventura'
+            keyPassword 'elephantidae'
+            storeFile file('/home/pablo/Escritorio/fugit/key.jks')
+            storePassword 'elephantidae'
+        }
+    }
     compileSdkVersion 24
     buildToolsVersion "24.0.0"
-
     defaultConfig {
         applicationId "pablogventura.fugit"
         minSdkVersion 23
@@ -21,7 +28,7 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.google.android.support:wearable:2.0.0-alpha1'
     compile 'com.google.android.gms:play-services-wearable:9.0.2'
 }

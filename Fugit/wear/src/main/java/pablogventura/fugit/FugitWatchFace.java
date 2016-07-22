@@ -149,6 +149,7 @@ public class FugitWatchFace extends CanvasWatchFaceService {
             mDatePaint = new Paint();
             mDatePaint = createTextPaint(Color.WHITE, resources.getDimension(R.dimen.size_date));
             mDatePaint.setTypeface(Typeface.SANS_SERIF);
+
             mTime = new Time();
         }
 
