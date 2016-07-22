@@ -144,10 +144,10 @@ public class FugitWatchFace extends CanvasWatchFaceService {
 
             mHourPaint = new Paint();
             mHourPaint = createTextPaint(resources.getColor(R.color.digital_text), resources.getDimension(R.dimen.digital_text_size_round));
-            mHourPaint.setStyle(Paint.Style.FILL_AND_STROKE);
+            mHourPaint.setStyle(Paint.Style.FILL);
 
             mDatePaint = new Paint();
-            mDatePaint = createTextPaint(resources.getColor(R.color.digital_text), resources.getDimension(R.dimen.size_date));
+            mDatePaint = createTextPaint(Color.WHITE, resources.getDimension(R.dimen.size_date));
             mDatePaint.setTypeface(Typeface.SANS_SERIF);
             mTime = new Time();
         }
@@ -287,10 +287,11 @@ public class FugitWatchFace extends CanvasWatchFaceService {
             canvas.drawTextOnPath(sDiaMes, mArcoSuperior, largoArco-mDatePaint.measureText(sDiaMes) - 40, 30, mDatePaint);
             canvas.drawTextOnPath(sDiaSemana, mArcoInferior, largoArco-mDatePaint.measureText(sDiaSemana) - 39, -13, mDatePaint);
             if (mTime.second % 2 == 0){
-                canvas.drawText("· ·", hXOffset+13, hYOffset+33, mHourPaint);
+                canvas.drawText("· ·", hXOffset+10, hYOffset+33, mHourPaint);
             }
             canvas.drawText(hours, hXOffset, hYOffset, mHourPaint);
             canvas.drawText(minutes, mXOffset, mYOffset, mHourPaint);
+
         }
 
         /**
