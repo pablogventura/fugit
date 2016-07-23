@@ -283,16 +283,19 @@ public class FugitWatchFace extends CanvasWatchFaceService {
             mArcoInferior.addArc(oval, 180, -180);
             int largoArco = 456; //2*pi * (320-30)/2 / 2;
 
+
             // escribo alrededor la fecha
-            canvas.drawTextOnPath(sDiaMes, mArcoSuperior, largoArco-mDatePaint.measureText(sDiaMes) - 40, 30, mDatePaint);
-            canvas.drawTextOnPath(sDiaSemana, mArcoInferior, largoArco-mDatePaint.measureText(sDiaSemana) - 39, -13, mDatePaint);
+            canvas.drawTextOnPath(sDiaMes, mArcoSuperior, largoArco-mDatePaint.measureText(sDiaMes) - 53, 30, mDatePaint);
+            canvas.drawTextOnPath(sDiaSemana, mArcoInferior, largoArco-mDatePaint.measureText(sDiaSemana), -13, mDatePaint);
 
             // escribo la hora y el titileo del ..
-            if (mTime.second % 2 == 0){
-                canvas.drawText("· ·", hXOffset+13, hYOffset+33, mHourPaint);
-            }
+
+            canvas.save();
+            canvas.rotate(-17, hXOffset, hYOffset);
+
             canvas.drawText(hours, hXOffset, hYOffset, mHourPaint);
-            canvas.drawText(minutes, mXOffset, mYOffset, mHourPaint);
+            canvas.drawText(minutes, mXOffset-15, mYOffset-15, mHourPaint);
+            canvas.restore();
 
             //canvas.drawText("\uF052", mXOffset-100, mYOffset, mMeteoPaint);
 
