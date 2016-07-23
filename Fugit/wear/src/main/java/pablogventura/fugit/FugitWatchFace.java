@@ -22,10 +22,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.Picture;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Typeface;
@@ -263,9 +266,16 @@ public class FugitWatchFace extends CanvasWatchFaceService {
         public void onDraw(Canvas canvas, Rect bounds) {
             //actualizo la hora
             mTime.setToNow();
-
+            if ((mTime.hour >= 6) && (mTime.hour <= 19)){
+                Bitmap bmpsol = BitmapFactory.decodeResource(getResources(),
+                        R.drawable.sol);
+                canvas.drawBitmap(bmpsol, -50, 0, mDatePaint);}
+            else{
+                Bitmap bmpluna = BitmapFactory.decodeResource(getResources(),
+                        R.drawable.luna);
+                canvas.drawBitmap(bmpluna, -50, 0, mDatePaint);}
             // Draw the background.
-            canvas.drawRect(0, 0, bounds.width(), bounds.height(), mBackgroundPaint);
+            //canvas.drawRect(0, 0, bounds.width(), bounds.height(), mBackgroundPaint);
 
             //genero las cadenas para la fecha
             Date fecha = new Date();
