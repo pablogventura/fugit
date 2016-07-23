@@ -152,8 +152,7 @@ public class FugitWatchFace extends CanvasWatchFaceService {
             fDiaSemana = new SimpleDateFormat("EEEE",Locale.getDefault());
             mDatePaint = new Paint();
             mDatePaint = createTextPaint(Color.WHITE, resources.getDimension(R.dimen.size_date));
-            Typeface comicTF =Typeface.createFromAsset(getAssets(),"fonts/ComicNeue-Angular-Bold.ttf");
-            mDatePaint.setTypeface(comicTF);
+            mDatePaint.setTypeface(Typeface.SANS_SERIF);
 
             mMeteoPaint = createTextPaint(resources.getColor(R.color.digital_text), resources.getDimension(R.dimen.digital_text_size_round));
             Typeface meteoTF =Typeface.createFromAsset(getAssets(),"fonts/weathericons-regular-webfont.ttf");
@@ -272,14 +271,12 @@ public class FugitWatchFace extends CanvasWatchFaceService {
             Date fecha = new Date();
             String sDiaMes = fDiaMes.format(fecha);
             String sDiaSemana = fDiaSemana.format(fecha);
-            String hours = String.format(Locale.getDefault(), "%d", mTime.hour);
+            String hours = String.format(Locale.getDefault(), "%02d", mTime.hour);
             String minutes = String.format(Locale.getDefault(), "%02d", mTime.minute);
 
             // genero los arcos para escribir alrededor
-            Path mArcoSuperior;
-            mArcoSuperior = new Path();
-            Path mArcoInferior;
-            mArcoInferior = new Path();
+            Path mArcoSuperior = new Path();
+            Path mArcoInferior = new Path();
             //moto 360 320x290px 241x218dp
             RectF oval = new RectF(0,0,320,320);
             mArcoSuperior.addArc(oval, -180, 180);
@@ -292,12 +289,12 @@ public class FugitWatchFace extends CanvasWatchFaceService {
 
             // escribo la hora y el titileo del ..
             if (mTime.second % 2 == 0){
-                canvas.drawText("· ·", hXOffset+10, hYOffset+33, mHourPaint);
+                canvas.drawText("· ·", hXOffset+13, hYOffset+33, mHourPaint);
             }
             canvas.drawText(hours, hXOffset, hYOffset, mHourPaint);
             canvas.drawText(minutes, mXOffset, mYOffset, mHourPaint);
 
-            canvas.drawText("\uF052", mXOffset-100, mYOffset, mMeteoPaint);
+            //canvas.drawText("\uF052", mXOffset-100, mYOffset, mMeteoPaint);
 
         }
 
