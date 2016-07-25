@@ -275,23 +275,39 @@ public class FugitWatchFace extends CanvasWatchFaceService {
             }
             invalidate();
         }
-        private void dia(Canvas canvas, int porcentaje){
+        private void dia(Canvas canvas, double porcentaje){
             Shader shader = new LinearGradient(0, 0, 0, 320*5/6, Color.rgb(0,255,255), Color.rgb(0,150,255), Shader.TileMode.CLAMP);
             mBackgroundPaint.setShader(shader);
+            porcentaje = (porcentaje * 300) -150;
             canvas.drawRect(0, 0, 320, 320, mBackgroundPaint);
 
             Bitmap bmpsol = BitmapFactory.decodeResource(getResources(),
                     R.drawable.sol);
             canvas.save();
-            canvas.rotate(porcentaje*320/100, 320/2, 320*6/10);
+            canvas.rotate((float) porcentaje , 320/2, 320*6/10);
             canvas.drawBitmap(bmpsol, 320/2-50/2, 0, mAstroPaint);
+            canvas.restore();
+        }
+        private void noche(Canvas canvas, double porcentaje){
+            Shader shader = new LinearGradient(0, 0, 0, 320*5/6, Color.rgb(0,0,0), Color.rgb(0,0,50), Shader.TileMode.CLAMP);
+            mBackgroundPaint.setShader(shader);
+            porcentaje = (porcentaje * 300) -150;
+            canvas.drawRect(0, 0, 320, 320, mBackgroundPaint);
+
+            Bitmap bmpluna = BitmapFactory.decodeResource(getResources(),
+                    R.drawable.luna);
+            canvas.save();
+            canvas.rotate((float) porcentaje , 320/2, 320*6/10);
+            canvas.drawBitmap(bmpluna, 320/2-50/2, 0, mAstroPaint);
             canvas.restore();
         }
         @Override
         public void onDraw(Canvas canvas, Rect bounds) {
             //actualizo la hora
             mTime.setToNow();
-            dia(canvas, mTime.second);
+
+
+            noche(canvas, 0.4);
 
             // Draw the background.
 
