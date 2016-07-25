@@ -51,6 +51,7 @@ import android.widget.TextView;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -107,12 +108,11 @@ public class FugitWatchFace extends CanvasWatchFaceService {
         Paint mDatePaint;
         Paint mMeteoPaint;
         Paint mAstroPaint;
-        Time mTime;
+        Calendar mTime;
         final BroadcastReceiver mTimeZoneReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                mTime.clear(intent.getStringExtra("time-zone"));
-                mTime.setToNow();
+                mTime = Calendar.getInstance();
             }
         };
         int mTapCount;
@@ -165,7 +165,6 @@ public class FugitWatchFace extends CanvasWatchFaceService {
             mMeteoPaint = createTextPaint(resources.getColor(R.color.digital_text), resources.getDimension(R.dimen.digital_text_size_round));
             Typeface meteoTF =Typeface.createFromAsset(getAssets(),"fonts/weathericons-regular-webfont.ttf");
             mMeteoPaint.setTypeface(meteoTF);
-            mTime = new Time();
         }
 
         @Override
@@ -199,8 +198,8 @@ public class FugitWatchFace extends CanvasWatchFaceService {
                 registerReceiver();
 
                 // Update time zone in case it changed while we weren't visible.
-                mTime.clear(TimeZone.getDefault().getID());
-                mTime.setToNow();
+
+                mTime = Calendar.getInstance();
             } else {
                 unregisterReceiver();
             }
@@ -304,7 +303,7 @@ public class FugitWatchFace extends CanvasWatchFaceService {
         @Override
         public void onDraw(Canvas canvas, Rect bounds) {
             //actualizo la hora
-            mTime.setToNow();
+            mTime = Calendar.getInstance();
 
 
             noche(canvas, 0.4);
@@ -312,11 +311,11 @@ public class FugitWatchFace extends CanvasWatchFaceService {
             // Draw the background.
 
             //genero las cadenas para la fecha
-            Date fecha = new Date();
+            Date fecha = mTime.getTime();
             String sDiaMes = fDiaMes.format(fecha);
             String sDiaSemana = fDiaSemana.format(fecha);
-            String hours = String.format(Locale.getDefault(), "%02d", mTime.hour);
-            String minutes = String.format(Locale.getDefault(), "%02d", mTime.minute);
+            String hours = String.format(Locale.getDefault(), "%02d", mTime.HOUR);
+            String minutes = String.format(Locale.getDefault(), "%02d", mTime.MINUTE);
 
             // genero los arcos para escribir alrededor
             Path mArcoSuperior = new Path();
