@@ -275,25 +275,24 @@ public class FugitWatchFace extends CanvasWatchFaceService {
             }
             invalidate();
         }
+        private void dia(Canvas canvas, int porcentaje){
+            Shader shader = new LinearGradient(0, 0, 0, 320*5/6, Color.rgb(0,255,255), Color.rgb(0,150,255), Shader.TileMode.CLAMP);
+            mBackgroundPaint.setShader(shader);
+            canvas.drawRect(0, 0, 320, 320, mBackgroundPaint);
 
+            Bitmap bmpsol = BitmapFactory.decodeResource(getResources(),
+                    R.drawable.sol);
+            canvas.save();
+            canvas.rotate(porcentaje*320/100, 320/2, 320*6/10);
+            canvas.drawBitmap(bmpsol, 320/2-50/2, 0, mAstroPaint);
+            canvas.restore();
+        }
         @Override
         public void onDraw(Canvas canvas, Rect bounds) {
             //actualizo la hora
             mTime.setToNow();
-            Shader shader = new LinearGradient(0, 0, 0, 320*5/6, Color.rgb(0,255,255), Color.rgb(0,150,255), Shader.TileMode.CLAMP);
-            mBackgroundPaint.setShader(shader);
-            canvas.drawRect(0, 0, bounds.width(), bounds.height(), mBackgroundPaint);
-            if ((mTime.hour >= 6) && (mTime.hour <= 19)){
-                Bitmap bmpsol = BitmapFactory.decodeResource(getResources(),
-                        R.drawable.sol);
-                canvas.save();
-                canvas.rotate(mTime.second*6, 320/2, 320*6/10);
-                canvas.drawBitmap(bmpsol, 320/2-50/2, 0, mAstroPaint);
-                canvas.restore();}
-            else{
-                Bitmap bmpluna = BitmapFactory.decodeResource(getResources(),
-                        R.drawable.luna);
-                canvas.drawBitmap(bmpluna, -50, 0, mAstroPaint);}
+            dia(canvas, mTime.second);
+
             // Draw the background.
 
             //genero las cadenas para la fecha
