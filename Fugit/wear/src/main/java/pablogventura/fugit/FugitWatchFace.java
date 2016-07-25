@@ -26,11 +26,13 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Picture;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.Shader;
 import android.graphics.Typeface;
 import android.location.Address;
 import android.location.Geocoder;
@@ -158,6 +160,7 @@ public class FugitWatchFace extends CanvasWatchFaceService {
             mDatePaint = createTextPaint(Color.WHITE, resources.getDimension(R.dimen.size_date));
             mDatePaint.setTypeface(Typeface.SANS_SERIF);
             mAstroPaint = new Paint();
+            mAstroPaint.setAntiAlias(true);
 
             mMeteoPaint = createTextPaint(resources.getColor(R.color.digital_text), resources.getDimension(R.dimen.digital_text_size_round));
             Typeface meteoTF =Typeface.createFromAsset(getAssets(),"fonts/weathericons-regular-webfont.ttf");
@@ -277,6 +280,8 @@ public class FugitWatchFace extends CanvasWatchFaceService {
         public void onDraw(Canvas canvas, Rect bounds) {
             //actualizo la hora
             mTime.setToNow();
+            Shader shader = new LinearGradient(0, 0, 0, 320*5/6, Color.rgb(0,255,255), Color.rgb(0,150,255), Shader.TileMode.CLAMP);
+            mBackgroundPaint.setShader(shader);
             canvas.drawRect(0, 0, bounds.width(), bounds.height(), mBackgroundPaint);
             if ((mTime.hour >= 6) && (mTime.hour <= 19)){
                 Bitmap bmpsol = BitmapFactory.decodeResource(getResources(),
