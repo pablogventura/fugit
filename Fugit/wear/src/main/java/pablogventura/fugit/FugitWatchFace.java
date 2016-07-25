@@ -44,12 +44,14 @@ import android.os.Message;
 import android.support.wearable.watchface.CanvasWatchFaceService;
 import android.support.wearable.watchface.WatchFaceStyle;
 import android.text.format.Time;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.WindowInsets;
 import android.widget.TextView;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -274,8 +276,31 @@ public class FugitWatchFace extends CanvasWatchFaceService {
             }
             invalidate();
         }
+        private void situacion(Canvas canvas, Date hAhora){
+            SimpleDateFormat format = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
+            Date hAmanecer = null;
+            Date hAtardecer = null;
+            try {
+                hAmanecer = format.parse("26/07/16 08:08:00");
+                hAtardecer = format.parse("25/07/16 18:38:00");
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            if (hAhora.after(hAmanecer) && hAhora.before(hAtardecer)){
+                double diff = ((double) (hAhora.getTime() - hAmanecer.getTime()))/ (hAtardecer.getTime() -hAmanecer.getTime());
+                dia(canvas, diff);}
+            else{
+                double diff = ((double) (hAhora.getTime() - hAtardecer.getTime()))/ (hAmanecer.getTime() -hAtardecer.getTime());
+                noche(canvas, diff);}
+
+
+
+
+
+        }
         private void dia(Canvas canvas, double porcentaje){
-            Shader shader = new LinearGradient(0, 0, 0, 320*5/6, Color.rgb(0,255,255), Color.rgb(0,150,255), Shader.TileMode.CLAMP);
+            Shader shader = new LinearGradient(0, 0, 0, 320*5/6, Color.rgb(0,255,255), Color.rgb(0,255/3*2,255), Shader.TileMode.CLAMP);
             mBackgroundPaint.setShader(shader);
             porcentaje = (porcentaje * 300) -150;
             canvas.drawRect(0, 0, 320, 320, mBackgroundPaint);
@@ -305,17 +330,15 @@ public class FugitWatchFace extends CanvasWatchFaceService {
             //actualizo la hora
             mTime = Calendar.getInstance();
 
-
-            noche(canvas, 0.4);
-
+            situacion(canvas, mTime.getTime());
             // Draw the background.
 
             //genero las cadenas para la fecha
             Date fecha = mTime.getTime();
             String sDiaMes = fDiaMes.format(fecha);
             String sDiaSemana = fDiaSemana.format(fecha);
-            String hours = String.format(Locale.getDefault(), "%02d", mTime.HOUR);
-            String minutes = String.format(Locale.getDefault(), "%02d", mTime.MINUTE);
+            String hours = String.format(Locale.getDefault(), "%02d", mTime.get(Calendar.HOUR_OF_DAY));
+            String minutes = String.format(Locale.getDefault(), "%02d", mTime.get(Calendar.MINUTE));
 
             // genero los arcos para escribir alrededor
             Path mArcoSuperior = new Path();
