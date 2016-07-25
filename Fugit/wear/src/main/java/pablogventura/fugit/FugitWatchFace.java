@@ -104,6 +104,7 @@ public class FugitWatchFace extends CanvasWatchFaceService {
         Paint mHourPaint;
         Paint mDatePaint;
         Paint mMeteoPaint;
+        Paint mAstroPaint;
         Time mTime;
         final BroadcastReceiver mTimeZoneReceiver = new BroadcastReceiver() {
             @Override
@@ -156,6 +157,7 @@ public class FugitWatchFace extends CanvasWatchFaceService {
             mDatePaint = new Paint();
             mDatePaint = createTextPaint(Color.WHITE, resources.getDimension(R.dimen.size_date));
             mDatePaint.setTypeface(Typeface.SANS_SERIF);
+            mAstroPaint = new Paint();
 
             mMeteoPaint = createTextPaint(resources.getColor(R.color.digital_text), resources.getDimension(R.dimen.digital_text_size_round));
             Typeface meteoTF =Typeface.createFromAsset(getAssets(),"fonts/weathericons-regular-webfont.ttf");
@@ -174,6 +176,15 @@ public class FugitWatchFace extends CanvasWatchFaceService {
             paint.setTypeface(Typeface.SERIF);
             paint.setTextSize(textSize);
             paint.setAntiAlias(true);
+
+
+            paint.setStrokeJoin(Paint.Join.ROUND);
+            paint.setStrokeMiter(10);
+
+            paint.setStrokeWidth(3);
+
+
+
             return paint;
         }
 
@@ -266,16 +277,19 @@ public class FugitWatchFace extends CanvasWatchFaceService {
         public void onDraw(Canvas canvas, Rect bounds) {
             //actualizo la hora
             mTime.setToNow();
+            canvas.drawRect(0, 0, bounds.width(), bounds.height(), mBackgroundPaint);
             if ((mTime.hour >= 6) && (mTime.hour <= 19)){
                 Bitmap bmpsol = BitmapFactory.decodeResource(getResources(),
                         R.drawable.sol);
-                canvas.drawBitmap(bmpsol, -50, 0, mDatePaint);}
+                canvas.save();
+                canvas.rotate(mTime.second*6, 320/2, 320*6/10);
+                canvas.drawBitmap(bmpsol, 320/2-50/2, 0, mAstroPaint);
+                canvas.restore();}
             else{
                 Bitmap bmpluna = BitmapFactory.decodeResource(getResources(),
                         R.drawable.luna);
-                canvas.drawBitmap(bmpluna, -50, 0, mDatePaint);}
+                canvas.drawBitmap(bmpluna, -50, 0, mAstroPaint);}
             // Draw the background.
-            //canvas.drawRect(0, 0, bounds.width(), bounds.height(), mBackgroundPaint);
 
             //genero las cadenas para la fecha
             Date fecha = new Date();
@@ -295,7 +309,13 @@ public class FugitWatchFace extends CanvasWatchFaceService {
 
 
             // escribo alrededor la fecha
+            mDatePaint.setStyle(Paint.Style.STROKE);
+            mDatePaint.setColor(Color.BLACK);
+            mHourPaint.setStyle(Paint.Style.STROKE);
+            mHourPaint.setColor(Color.BLACK);
             canvas.drawTextOnPath(sDiaMes, mArcoSuperior, largoArco-mDatePaint.measureText(sDiaMes) - 53, 30, mDatePaint);
+
+            //canvas.drawTextOnPath(sDiaMes, mArcoSuperior, largoArco-mDatePaint.measureText(sDiaMes) - 53, 30, mDatePaint);
             canvas.drawTextOnPath(sDiaSemana, mArcoInferior, largoArco-mDatePaint.measureText(sDiaSemana), -13, mDatePaint);
 
             // escribo la hora y el titileo del ..
@@ -307,7 +327,24 @@ public class FugitWatchFace extends CanvasWatchFaceService {
             canvas.drawText(minutes, mXOffset-15, mYOffset-15, mHourPaint);
             canvas.restore();
 
-            //canvas.drawText("\uF052", mXOffset-100, mYOffset, mMeteoPaint);
+
+            mDatePaint.setStyle(Paint.Style.FILL);
+            mDatePaint.setColor(Color.WHITE);
+            mHourPaint.setStyle(Paint.Style.FILL);
+            mHourPaint.setColor(Color.WHITE);
+            canvas.drawTextOnPath(sDiaMes, mArcoSuperior, largoArco-mDatePaint.measureText(sDiaMes) - 53, 30, mDatePaint);
+
+            //canvas.drawTextOnPath(sDiaMes, mArcoSuperior, largoArco-mDatePaint.measureText(sDiaMes) - 53, 30, mDatePaint);
+            canvas.drawTextOnPath(sDiaSemana, mArcoInferior, largoArco-mDatePaint.measureText(sDiaSemana), -13, mDatePaint);
+
+            // escribo la hora y el titileo del ..
+
+            canvas.save();
+            canvas.rotate(-17, hXOffset, hYOffset);
+
+            canvas.drawText(hours, hXOffset, hYOffset, mHourPaint);
+            canvas.drawText(minutes, mXOffset-15, mYOffset-15, mHourPaint);
+            canvas.restore();
 
         }
 
