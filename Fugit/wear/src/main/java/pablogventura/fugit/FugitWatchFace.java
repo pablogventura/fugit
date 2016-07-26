@@ -335,9 +335,6 @@ public class FugitWatchFace extends CanvasWatchFaceService {
             canvas.rotate((float) porcentaje , 320/2, 320*6/10);
             canvas.drawBitmap(bmpluna, 320/2-50/2, 0, mAstroPaint);
             canvas.restore();
-            Random r = new Random();
-
-
         }
         @Override
         public void onDraw(Canvas canvas, Rect bounds) {
