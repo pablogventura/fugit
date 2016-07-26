@@ -57,6 +57,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
@@ -327,10 +328,16 @@ public class FugitWatchFace extends CanvasWatchFaceService {
 
             Bitmap bmpluna = BitmapFactory.decodeResource(getResources(),
                     R.drawable.luna);
+            Bitmap bmpestrellas = BitmapFactory.decodeResource(getResources(),
+                    R.drawable.estrellas);
+            canvas.drawBitmap(bmpestrellas, 0, 0, mAstroPaint);
             canvas.save();
             canvas.rotate((float) porcentaje , 320/2, 320*6/10);
             canvas.drawBitmap(bmpluna, 320/2-50/2, 0, mAstroPaint);
             canvas.restore();
+            Random r = new Random();
+
+
         }
         @Override
         public void onDraw(Canvas canvas, Rect bounds) {
