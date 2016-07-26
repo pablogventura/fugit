@@ -34,10 +34,6 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Shader;
 import android.graphics.Typeface;
-import android.location.Address;
-import android.location.Geocoder;
-import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -48,6 +44,10 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.WindowInsets;
 import android.widget.TextView;
+
+
+import com.luckycatlabs.sunrisesunset.SunriseSunsetCalculator;
+import com.luckycatlabs.sunrisesunset.dto.Location;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
@@ -277,26 +277,33 @@ public class FugitWatchFace extends CanvasWatchFaceService {
             invalidate();
         }
         private void situacion(Canvas canvas, Date hAhora){
-            SimpleDateFormat format = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
-            Date hAmanecer = null;
-            Date hAtardecer = null;
-            try {
-                hAmanecer = format.parse("26/07/16 08:08:00");
-                hAtardecer = format.parse("25/07/16 18:38:00");
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
 
+            Location location = new Location("-31.416666666667", "-64.183333333333");
+            SunriseSunsetCalculator calculator = new SunriseSunsetCalculator(location, TimeZone.getDefault());
+
+            Date hAmanecer = calculator.getCivilSunriseCalendarForDate(Calendar.getInstance()).getTime();
+            Date hAtardecer = calculator.getCivilSunsetCalendarForDate(Calendar.getInstance()).getTime();
             if (hAhora.after(hAmanecer) && hAhora.before(hAtardecer)){
                 double diff = ((double) (hAhora.getTime() - hAmanecer.getTime()))/ (hAtardecer.getTime() -hAmanecer.getTime());
                 dia(canvas, diff);}
-            else{
+            else if (hAhora.before(hAmanecer) && hAhora.after(hAtardecer)) {
                 double diff = ((double) (hAhora.getTime() - hAtardecer.getTime()))/ (hAmanecer.getTime() -hAtardecer.getTime());
-                noche(canvas, diff);}
-
-
-
-
+                noche(canvas, diff);
+            }else if (hAhora.before(hAmanecer) && hAhora.before(hAtardecer)){
+                // antes del amanecer
+                Calendar ayer = Calendar.getInstance();
+                ayer.add(Calendar.DATE, -1);
+                hAtardecer = calculator.getCivilSunsetCalendarForDate(Calendar.getInstance()).getTime();
+                double diff = ((double) (hAhora.getTime() - hAtardecer.getTime()))/ (hAmanecer.getTime() -hAtardecer.getTime());
+                noche(canvas, diff);
+            }else if (hAhora.after(hAmanecer) && hAhora.after(hAtardecer)){
+                // despues del atardecer antes de mañana
+                Calendar mannana = Calendar.getInstance();
+                mannana.add(Calendar.DATE, 1);
+                hAmanecer = calculator.getCivilSunriseCalendarForDate(mannana).getTime();
+                double diff = ((double) (hAhora.getTime() - hAtardecer.getTime()))/ (hAmanecer.getTime() -hAtardecer.getTime());
+                noche(canvas, diff);
+            }
 
         }
         private void dia(Canvas canvas, double porcentaje){
