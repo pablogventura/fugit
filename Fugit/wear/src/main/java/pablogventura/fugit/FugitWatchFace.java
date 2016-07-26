@@ -293,7 +293,7 @@ public class FugitWatchFace extends CanvasWatchFaceService {
                 // antes del amanecer
                 Calendar ayer = Calendar.getInstance();
                 ayer.add(Calendar.DATE, -1);
-                hAtardecer = calculator.getCivilSunsetCalendarForDate(Calendar.getInstance()).getTime();
+                hAtardecer = calculator.getCivilSunsetCalendarForDate(ayer).getTime();
                 double diff = ((double) (hAhora.getTime() - hAtardecer.getTime()))/ (hAmanecer.getTime() -hAtardecer.getTime());
                 noche(canvas, diff);
             }else if (hAhora.after(hAmanecer) && hAhora.after(hAtardecer)){
