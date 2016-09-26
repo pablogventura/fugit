@@ -320,6 +320,9 @@ public class FugitWatchFace extends CanvasWatchFaceService {
             mTime = Calendar.getInstance();
 
             // Draw the background.
+            Shader shader = new LinearGradient(0, 0, 0, 320*5/6, Color.rgb(0,0,50), Color.rgb(0,0,0), Shader.TileMode.CLAMP);
+            mBackgroundPaint.setShader(shader);
+            canvas.drawRect(0, 0, 320, 320, mBackgroundPaint);
 
             //genero las cadenas para la fecha
             Date fecha = mTime.getTime();
