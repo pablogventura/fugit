@@ -164,12 +164,7 @@ public class FugitWatchFace extends CanvasWatchFaceService {
             mDatePaint = new Paint();
             mDatePaint = createTextPaint(Color.WHITE, resources.getDimension(R.dimen.size_date));
             mDatePaint.setTypeface(Typeface.SANS_SERIF);
-            mAstroPaint = new Paint();
-            mAstroPaint.setAntiAlias(true);
 
-            mMeteoPaint = createTextPaint(resources.getColor(R.color.digital_text), resources.getDimension(R.dimen.digital_text_size_round));
-            Typeface meteoTF =Typeface.createFromAsset(getAssets(),"fonts/weathericons-regular-webfont.ttf");
-            mMeteoPaint.setTypeface(meteoTF);
         }
 
         @Override
@@ -316,71 +311,14 @@ public class FugitWatchFace extends CanvasWatchFaceService {
             }
             invalidate();
         }
-        private void situacion(Canvas canvas, Date hAhora){
 
-            Location location = new Location("-31.416666666667", "-64.183333333333");
-            SunriseSunsetCalculator calculator = new SunriseSunsetCalculator(location, TimeZone.getDefault());
 
-            Date hAmanecer = calculator.getCivilSunriseCalendarForDate(Calendar.getInstance()).getTime();
-            Date hAtardecer = calculator.getCivilSunsetCalendarForDate(Calendar.getInstance()).getTime();
-            if (hAhora.after(hAmanecer) && hAhora.before(hAtardecer)){
-                double diff = ((double) (hAhora.getTime() - hAmanecer.getTime()))/ (hAtardecer.getTime() -hAmanecer.getTime());
-                dia(canvas, diff);}
-            else if (hAhora.before(hAmanecer) && hAhora.after(hAtardecer)) {
-                double diff = ((double) (hAhora.getTime() - hAtardecer.getTime()))/ (hAmanecer.getTime() -hAtardecer.getTime());
-                noche(canvas, diff);
-            }else if (hAhora.before(hAmanecer) && hAhora.before(hAtardecer)){
-                // antes del amanecer
-                Calendar ayer = Calendar.getInstance();
-                ayer.add(Calendar.DATE, -1);
-                hAtardecer = calculator.getCivilSunsetCalendarForDate(ayer).getTime();
-                double diff = ((double) (hAhora.getTime() - hAtardecer.getTime()))/ (hAmanecer.getTime() -hAtardecer.getTime());
-                noche(canvas, diff);
-            }else if (hAhora.after(hAmanecer) && hAhora.after(hAtardecer)){
-                // despues del atardecer antes de mañana
-                Calendar mannana = Calendar.getInstance();
-                mannana.add(Calendar.DATE, 1);
-                hAmanecer = calculator.getCivilSunriseCalendarForDate(mannana).getTime();
-                double diff = ((double) (hAhora.getTime() - hAtardecer.getTime()))/ (hAmanecer.getTime() -hAtardecer.getTime());
-                noche(canvas, diff);
-            }
 
-        }
-        private void dia(Canvas canvas, double porcentaje){
-            Shader shader = new LinearGradient(0, 0, 0, 320*5/6, Color.rgb(0,255,255), Color.rgb(0,255/3*2,255), Shader.TileMode.CLAMP);
-            mBackgroundPaint.setShader(shader);
-            porcentaje = (porcentaje * 300) -150;
-            canvas.drawRect(0, 0, 320, 320, mBackgroundPaint);
-
-            Bitmap bmpsol = BitmapFactory.decodeResource(getResources(),
-                    R.drawable.sol);
-            canvas.save();
-            canvas.rotate((float) porcentaje , 320/2, 320*6/10);
-            canvas.drawBitmap(bmpsol, 320/2-50/2, 0, mAstroPaint);
-            canvas.restore();
-        }
-        private void noche(Canvas canvas, double porcentaje){
-            Shader shader = new LinearGradient(0, 0, 0, 320*5/6, Color.rgb(0,0,0), Color.rgb(0,0,50), Shader.TileMode.CLAMP);
-            mBackgroundPaint.setShader(shader);
-            porcentaje = (porcentaje * 300) -150;
-            canvas.drawRect(0, 0, 320, 320, mBackgroundPaint);
-
-            Bitmap bmpluna = BitmapFactory.decodeResource(getResources(),
-                    R.drawable.luna);
-            Bitmap bmpestrellas = BitmapFactory.decodeResource(getResources(),
-                    R.drawable.estrellas);
-            canvas.drawBitmap(bmpestrellas, 0, 0, mAstroPaint);
-            canvas.save();
-            canvas.rotate((float) porcentaje , 320/2, 320*6/10);
-            canvas.drawBitmap(bmpluna, 320/2-50/2, 0, mAstroPaint);
-            canvas.restore();
-        }
         @Override
         public void onDraw(Canvas canvas, Rect bounds) {
             //actualizo la hora
             mTime = Calendar.getInstance();
 
-            situacion(canvas, mTime.getTime());
             // Draw the background.
 
             //genero las cadenas para la fecha
