@@ -286,6 +286,11 @@ public class FugitWatchFace extends CanvasWatchFaceService {
                             "WatchFaceWakelockTag"); // note WakeLock spelling
 
                     wakeLock.acquire();
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     for(int i=0; i<(int)mTime.get(Calendar.HOUR_OF_DAY); i++){
                         v.vibrate(vhoras,-1);
                         try {
