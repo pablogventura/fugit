@@ -37,6 +37,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.PowerManager;
 import android.os.Vibrator;
 import android.support.wearable.watchface.CanvasWatchFaceService;
 import android.support.wearable.watchface.WatchFaceStyle;
@@ -272,19 +273,43 @@ public class FugitWatchFace extends CanvasWatchFaceService {
                 case TAP_TYPE_TAP:
                     // The user has completed the tap gesture.
                     mTapCount++;
-                    mBackgroundPaint.setColor(resources.getColor(mTapCount % 2 == 0 ?
-                            R.color.background : R.color.background2));
+
                     Vibrator v = (Vibrator) FugitWatchFace.this.getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
                     // Vibrate for 500 milliseconds
                     long[] vhoras = {0,200,100};
-                    long[] vminutos = {500,100,50};
+                    long[] vminutos = {0,100,50};
                     //v.vibrate(vhoras,(int)mTime.get(Calendar.HOUR_OF_DAY));
+                    PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
+
+                    PowerManager.WakeLock wakeLock = powerManager.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK,
+                            "WatchFaceWakelockTag"); // note WakeLock spelling
+
+                    wakeLock.acquire();
                     for(int i=0; i<(int)mTime.get(Calendar.HOUR_OF_DAY); i++){
-                        v.vibrate(new long[] {0,200,100},-1);
+                        v.vibrate(vhoras,-1);
+                        try {
+                            Thread.sleep(300);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                     }
-                    for(int i=0; i<(int)mTime.get(Calendar.MINUTE); i++) {
-                        v.vibrate(new long[]{500, 100, 50}, -1);
+                    try {
+                        Thread.sleep(300);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
+                    for(int i=0; i<(int)mTime.get(Calendar.MINUTE)/10; i++){
+                        v.vibrate(vminutos,-1);
+                        try {
+                            Thread.sleep(150);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    wakeLock.release();
+                    //for(int i=0; i<(int)(mTime.get(Calendar.MINUTE)/10); i++) {
+                    //    v.vibrate(vminutos, -1);
+                    //}
                     //Vibrator v = (Vibrator) FugitWatchFace.this.getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
                     //v.vibrate(vminutos,mTime.get(Calendar.MINUTE));
                     break;
