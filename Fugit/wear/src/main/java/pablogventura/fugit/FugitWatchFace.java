@@ -276,7 +276,17 @@ public class FugitWatchFace extends CanvasWatchFaceService {
                             R.color.background : R.color.background2));
                     Vibrator v = (Vibrator) FugitWatchFace.this.getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
                     // Vibrate for 500 milliseconds
-                    v.vibrate(500);
+                    long[] vhoras = {0,200,100};
+                    long[] vminutos = {500,100,50};
+                    //v.vibrate(vhoras,(int)mTime.get(Calendar.HOUR_OF_DAY));
+                    for(int i=0; i<(int)mTime.get(Calendar.HOUR_OF_DAY); i++){
+                        v.vibrate(new long[] {0,200,100},-1);
+                    }
+                    for(int i=0; i<(int)mTime.get(Calendar.MINUTE); i++) {
+                        v.vibrate(new long[]{500, 100, 50}, -1);
+                    }
+                    //Vibrator v = (Vibrator) FugitWatchFace.this.getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
+                    //v.vibrate(vminutos,mTime.get(Calendar.MINUTE));
                     break;
             }
             invalidate();
