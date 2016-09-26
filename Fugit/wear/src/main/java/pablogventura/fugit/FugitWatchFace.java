@@ -111,6 +111,7 @@ public class FugitWatchFace extends CanvasWatchFaceService {
         Paint mBackgroundPaint;
         Paint mHourPaint;
         Paint mDatePaint;
+        Paint mHandPaint;
         Paint mMeteoPaint;
         Paint mAstroPaint;
         Calendar mTime;
@@ -165,6 +166,11 @@ public class FugitWatchFace extends CanvasWatchFaceService {
             mDatePaint = createTextPaint(Color.WHITE, resources.getDimension(R.dimen.size_date));
             mDatePaint.setTypeface(Typeface.SANS_SERIF);
 
+            mHandPaint = new Paint();
+            mHandPaint.setColor(resources.getColor(R.color.analog_hands));
+            mHandPaint.setStrokeWidth(resources.getDimension(R.dimen.analog_hand_stroke));
+            mHandPaint.setAntiAlias(true);
+            mHandPaint.setStrokeCap(Paint.Cap.ROUND);
         }
 
         @Override
@@ -324,6 +330,35 @@ public class FugitWatchFace extends CanvasWatchFaceService {
             mBackgroundPaint.setShader(shader);
             canvas.drawRect(0, 0, 320, 320, mBackgroundPaint);
 
+            // Find the center. Ignore the window insets so that, on round watches with a
+            // "chin", the watch face is centered on the entire screen, not just the usable
+            // portion.
+            float centerX = bounds.width() / 2f;
+            float centerY = bounds.height() / 2f;
+
+            float secRot = mTime.get(Calendar.SECOND) / 30f * (float) Math.PI;
+            int aminutes = mTime.get(Calendar.MINUTE);
+            float minRot = aminutes / 30f * (float) Math.PI;
+            float hrRot = ((mTime.get(Calendar.HOUR) + (aminutes / 60f)) / 6f) * (float) Math.PI;
+
+            float secLength = centerX - 20;
+            float minLength = centerX - 40;
+            float hrLength = centerX - 80;
+
+
+            float secX = (float) Math.sin(secRot) * secLength;
+            float secY = (float) -Math.cos(secRot) * secLength;
+            canvas.drawLine(centerX, centerY, centerX + secX, centerY + secY, mHandPaint);
+
+
+            float minX = (float) Math.sin(minRot) * minLength;
+            float minY = (float) -Math.cos(minRot) * minLength;
+            canvas.drawLine(centerX, centerY, centerX + minX, centerY + minY, mHandPaint);
+
+            float hrX = (float) Math.sin(hrRot) * hrLength;
+            float hrY = (float) -Math.cos(hrRot) * hrLength;
+            canvas.drawLine(centerX, centerY, centerX + hrX, centerY + hrY, mHandPaint);
+
             //genero las cadenas para la fecha
             Date fecha = mTime.getTime();
             String sDiaMes = fDiaMes.format(fecha);
@@ -378,6 +413,10 @@ public class FugitWatchFace extends CanvasWatchFaceService {
             canvas.drawText(hours, hXOffset, hYOffset, mHourPaint);
             canvas.drawText(minutes, mXOffset-15, mYOffset-15, mHourPaint);
             canvas.restore();
+
+
+
+
 
         }
 

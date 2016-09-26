@@ -7,4 +7,5 @@
     <dimen name="hours_y_offset">109dp</dimen>
     <dimen name="minutes_x_offset_round">183dp</dimen>
     <dimen name="minutes_y_offset">159dp</dimen>
+    <dimen name="analog_hand_stroke">3dp</dimen>
 </resources>
