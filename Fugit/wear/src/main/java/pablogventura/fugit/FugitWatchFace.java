@@ -291,7 +291,7 @@ public class FugitWatchFace extends CanvasWatchFaceService {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    for(int i=0; i<(int)mTime.get(Calendar.HOUR); i++){
+                    for(int i=0; i<((int)mTime.get(Calendar.HOUR)%12)+1; i++){
                         v.vibrate(vhoras,-1);
                         try {
                             Thread.sleep(300);
